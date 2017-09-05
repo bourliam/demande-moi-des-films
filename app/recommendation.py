@@ -1,6 +1,7 @@
 # coding: utf-8
 
 # All the recommandation logic and algorithms goes here
+import pdb
 
 from random import choice
 
@@ -57,39 +58,41 @@ class Recommendation:
     # Display the recommendation for a user
     def make_recommendation(self, user):
         similarities = self.compute_all_similarities(user)
-        simRef = 0
+        simRef = 0.
         indiceRef = -1
         indice = 0
+        temp = 0
 
-        for sim in similarities
-            if sim > simRef
-                indiceRef = indice
-            indice += 1
         
+        for user in similarities:
+            if user['sim'] > simRef:
+                simRef = user['sim']
+                indiceRef = user['key']
+           
         userMost = self.test_users[indiceRef]
+        reco_movies = []
+        for movie in userMost.good_ratings:
+            reco_movies.append(movie.title)
 
-
-        movie = choice(list(self.movies.values())).title
-
-        return "Vos recommandations : " + ", ".join([userMost.id])
+        return "Vos recommandations : " + ", ".join(reco_movies)
 
     # Compute the similarity between two users
     @staticmethod
     def get_similarity(user_a, user_b):
-        score = 0
-        for movie in user_a.good_ratings
-            if movie in user_b.good_ratings
+        score = 0.
+        for movie in user_a.good_ratings:
+            if movie in user_b.good_ratings:
                 score += 1
-            else if movie in user_b.bad_ratings
+            elif movie in user_b.bad_ratings:
                 score -= 1
         
-        for movie in user_a.bad_ratings
-            if movie in user_b.bad_ratings
+        for movie in user_a.bad_ratings:
+            if movie in user_b.bad_ratings:
                 score += 1
-            else if movie in user_b.good_ratings
+            elif movie in user_b.good_ratings:
                 score -= 1
         
-        score = score / self.get_user_norm(user_a) * self.get_user_norm(user_b)
+        score = score / ( Recommendation.get_user_norm(user_a) * Recommendation.get_user_norm(user_b) )
 
         return score
 
@@ -97,8 +100,8 @@ class Recommendation:
     def compute_all_similarities(self, user):
         similarities = []
 
-        for user_b in self.test_users
-            similarities.append(self.get_similarity(user, user_b))
+        for user_b in self.test_users:
+            similarities.append({'key': user_b, 'sim':self.get_similarity(user, self.test_users[user_b])})
 
         return similarities
 

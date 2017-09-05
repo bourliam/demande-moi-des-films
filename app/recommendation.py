@@ -56,18 +56,51 @@ class Recommendation:
 
     # Display the recommendation for a user
     def make_recommendation(self, user):
+        similarities = self.compute_all_similarities(user)
+        simRef = 0
+        indiceRef = -1
+        indice = 0
+
+        for sim in similarities
+            if sim > simRef
+                indiceRef = indice
+            indice += 1
+        
+        userMost = self.test_users[indiceRef]
+
+
         movie = choice(list(self.movies.values())).title
 
-        return "Vos recommandations : " + ", ".join([movie])
+        return "Vos recommandations : " + ", ".join([userMost.id])
 
     # Compute the similarity between two users
     @staticmethod
     def get_similarity(user_a, user_b):
-        return 1
+        score = 0
+        for movie in user_a.good_ratings
+            if movie in user_b.good_ratings
+                score += 1
+            else if movie in user_b.bad_ratings
+                score -= 1
+        
+        for movie in user_a.bad_ratings
+            if movie in user_b.bad_ratings
+                score += 1
+            else if movie in user_b.good_ratings
+                score -= 1
+        
+        score = score / self.get_user_norm(user_a) * self.get_user_norm(user_b)
+
+        return score
 
     # Compute the similarity between a user and all the users in the data set
     def compute_all_similarities(self, user):
-        return []
+        similarities = []
+
+        for user_b in self.test_users
+            similarities.append(self.get_similarity(user, user_b))
+
+        return similarities
 
     @staticmethod
     def get_best_movies_from_users(users):
@@ -79,7 +112,7 @@ class Recommendation:
 
     @staticmethod
     def get_user_norm(user):
-        return 1
+        return len(user.good_ratings) + len(user.bad_ratings)
 
     # Return a vector with the normalised ratings of a user
     @staticmethod

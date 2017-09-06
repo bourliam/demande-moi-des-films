@@ -64,16 +64,16 @@ class Recommendation:
         temp = 0
 
         
-        for user in similarities:
-            if user['sim'] > simRef:
-                simRef = user['sim']
-                indiceRef = user['key']
-           
-        userMost = self.test_users[indiceRef]
-        reco_movies = []
-        for movie in userMost.good_ratings:
-            reco_movies.append(movie.title)
+        similarities.sort(key=lambda user: user['sim'], reverse=True)
 
+        reco_movies = []
+        
+        for i in range (0,6):
+            top_user = self.test_users[similarities[i]['key']]
+            for movie in top_user.good_ratings:
+                reco_movies.append(movie.title)
+
+        
         return "Vos recommandations : " + ", ".join(reco_movies)
 
     # Compute the similarity between two users

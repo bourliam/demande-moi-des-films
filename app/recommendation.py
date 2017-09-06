@@ -71,7 +71,9 @@ class Recommendation:
         for i in range (0,6):
             top_user = self.test_users[similarities[i]['key']]
             for movie in top_user.good_ratings:
-                reco_movies.append(movie.title)
+                if movie not in user.good_ratings:
+                    if movie.title not in reco_movies:
+                        reco_movies.append(movie.title)
 
         
         return "Vos recommandations : " + ", ".join(reco_movies)
